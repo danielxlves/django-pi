@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    networks:
+      - back-network
+    ports:
+      - "3306:3306"  # Expondo a porta 3306 do MySQL
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  api:
+    build: .
+    command: >
+      sh -c "
+      sleep 120 &&
+      python manage.py migrate &&
+      python manage.py makemigrations api &&
+      python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      
+    networks:
+      - back-network 
+
+networks:
+  back-network:
+    driver: bridge
+
+volumes:
+  db_data:
