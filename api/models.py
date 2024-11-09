@@ -106,10 +106,10 @@ class Operacao(models.Model):
 
 
 class Salario(models.Model):
-    funcionario = models.ForeignKey(Funcionario,  related_name='salarios', on_delete=models.CASCADE)
+    funcionario = models.ForeignKey(Funcionario, related_name='salarios', on_delete=models.CASCADE)
     valor_salario = models.DecimalField(max_digits=10, decimal_places=2)
     data_pagamento = models.DateField()
     observacoes = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"Salário de {self.funcionario.nome} - {self.valor}"
+        return f"Salário de {self.funcionario.nome} - {self.valor_salario}"
