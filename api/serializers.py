@@ -23,6 +23,11 @@ class ServicoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Servico
         fields = '__all__'
+     
+    def validate_preco(self, value):
+        if value < 0:
+            raise serializers.ValidationError("O preço não pode ser negativo.")
+        return value
 
 
 class ServicoPrestadoSerializer(serializers.ModelSerializer):
